@@ -5,4 +5,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AutoCivil.CAD\AutoCivil.CAD.csproj" />
+  </ItemGroup>
+
 </Project>
