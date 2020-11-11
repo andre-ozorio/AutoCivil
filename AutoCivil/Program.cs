@@ -19,14 +19,14 @@ namespace AutoCivil
 
             var cozinhaShape1 = new CADShape(cozinha)
             {
-                Width = 7000,
+                Width = 6800,
                 Height = 3000
             };
             shapes.Add(cozinhaShape1);
 
             var cozinhaShape2 = new CADShape(cozinha)
             {
-                Width = 1500,
+                Width = 1700,
                 Height = 2500
             };
             shapes.Add(cozinhaShape2);
@@ -65,7 +65,7 @@ namespace AutoCivil
             var quartoShape = new CADShape(quarto)
             {
                 Width = 3000,
-                Height = 5500
+                Height = 5900
             };
             shapes.Add(quartoShape);
             suiteShape.RightShape = quartoShape;
@@ -75,7 +75,7 @@ namespace AutoCivil
             var musculacaoShape = new CADShape(musculacao)
             {
                 Width = 3000,
-                Height = 5500
+                Height = 3000
             };
             shapes.Add(musculacaoShape);
             suiteShape.BottomShape = musculacaoShape;
@@ -84,8 +84,8 @@ namespace AutoCivil
             places.Add(sala);
             var salaShape1 = new CADShape(sala)
             {
-                Width = 7000,
-                Height = 1000
+                Width = 6800,
+                Height = 1200
             };
             shapes.Add(salaShape1);
             cozinhaShape1.BottomShape = salaShape1;
@@ -110,7 +110,7 @@ namespace AutoCivil
             places.Add(corredor);
             var corredorShape1 = new CADShape(corredor)
             {
-                Width = 1450,
+                Width = 1250,
                 Height = 1000
             };
             shapes.Add(corredorShape1);
@@ -118,7 +118,7 @@ namespace AutoCivil
 
             var corredorShape2 = new CADShape(corredor)
             {
-                Width = 4000,
+                Width = 4200,
                 Height = 1000
             };
             shapes.Add(corredorShape2);

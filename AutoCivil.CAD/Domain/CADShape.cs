@@ -58,14 +58,14 @@ namespace AutoCivil.CAD.Domain
                                     
             if(this.RightShape != null && this.RightShape.Place == Place && !this.RightShape.Calculated)
             {
-                var nextX = this.X + this.Width + (this.Place != this.RightShape.Place ? this.RightWall : 0);
-                var nextY = this.Y - (this.RightShape.TopShape != null ? this.RightShape.TopWall : 0);
+                var nextX = this.X + this.Width;
+                var nextY = this.Y;
                 this.RightShape.Locate(nextX, nextY, shapes, initialShape);
             }
 
             if (this.LeftShape != null && this.LeftShape.Place == Place && !this.LeftShape.Calculated)
             {
-                var nextX = this.X - this.LeftShape.Width - (this.Place != this.LeftShape.Place ? this.LeftWall : 0);
+                var nextX = this.X - this.LeftShape.Width;
                 var nextY = this.Y;
                 this.LeftShape.Locate(nextX, nextY, shapes, initialShape);
             }
@@ -73,14 +73,14 @@ namespace AutoCivil.CAD.Domain
             if (this.BottomShape != null && this.BottomShape.Place == Place && !this.BottomShape.Calculated)
             {
                 var nextX = this.X;
-                var nextY = this.Y - this.Height - (this.Place != this.BottomShape.Place ? this.BottomWall : 0);
+                var nextY = this.Y - this.Height;
                 this.BottomShape.Locate(nextX, nextY, shapes, initialShape);
             }
 
             if (this.TopShape != null && this.TopShape.Place == Place && !this.TopShape.Calculated)
             {
                 var nextX = this.X;
-                var nextY = this.Y + this.Height + (this.Place != this.TopShape.Place ? this.TopWall : 0);
+                var nextY = this.Y + this.Height;
                 this.TopShape.Locate(nextX, nextY, shapes, initialShape);
             }
 
@@ -112,9 +112,9 @@ namespace AutoCivil.CAD.Domain
                 var nextX = this.X;
                 var nextY = this.Y - this.Height - (this.Place != this.BottomShape.Place ? this.BottomWall : 0);
 
-                var leftShape = shapes.Where(s => s.Calculated && s.X2 >= nextX - this.RightWall && s.Y >= nextY && s.Y2 < nextY).FirstOrDefault();
+                var leftShape = shapes.Where(s => s.Calculated && s.X2 <= nextX && s.X2 >= nextX - s.RightWall && ((s.Y >= nextY && s.Y2 <= nextY)||( s.Y > nextY - this.BottomShape.Height && s.Y2 <= nextY - this.BottomShape.Height))).FirstOrDefault();
                 if (leftShape != null)
-                    nextX += leftShape.RightWall;
+                    nextX = leftShape.X2 + leftShape.RightWall;
 
                 this.BottomShape.Locate(nextX, nextY, shapes, this.BottomShape);
             }
@@ -122,7 +122,7 @@ namespace AutoCivil.CAD.Domain
             if (this.TopShape != null && this.TopShape.Place != Place && !this.TopShape.Calculated)
             {
                 var nextX = this.X;
-                var nextY = this.Y + this.Height + (this.Place != this.TopShape.Place ? this.TopWall : 0);
+                var nextY = this.Y + this.TopShape.Height + this.TopWall;
                 this.TopShape.Locate(nextX, nextY, shapes, this.TopShape);
             }
 

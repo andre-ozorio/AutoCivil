@@ -152,7 +152,7 @@ namespace AutoCivil.CAD.Libraries
             }
 
             //Tentando ir para esquerda
-            var leftShape = shapes.FirstOrDefault(s => s.X2 == x && s.Y == y);
+            var leftShape = shapes.FirstOrDefault(s => s.X2 == x && s.Y2 == y);
             if (leftShape != null)
             {
                 DrawToLeft(shape.X, shape.Y2, leftShape, shapes, dxf);
