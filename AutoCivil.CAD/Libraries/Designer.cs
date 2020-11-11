@@ -52,38 +52,38 @@ namespace AutoCivil.CAD.Libraries
         {
             var shape = place.Shapes.OrderBy(s => s.X).ThenByDescending(s => s.Y).First();
             place.OriginShape = shape;
-            DrawToRight(shape, place.Shapes, dxf);
+            DrawToRight(shape.X, shape.Y, shape, place.Shapes, dxf);
         }
 
-        private void DrawToRight(CADShape shape, List<CADShape> shapes, DxfDocument dxf)
+        private void DrawToRight(int x, int y, CADShape shape, List<CADShape> shapes, DxfDocument dxf)
         {
-            var line = new Line(new Vector2(shape.X, shape.Y), new Vector2(shape.X2, shape.Y)); //Desenhando o topo para direita
+            var line = new Line(new Vector2(x, y), new Vector2(shape.X2, shape.Y)); //Desenhando o topo para direita
             line.Layer = _layerParede;
             dxf.AddEntity(line);
 
             //Tentando ir para cima
-            var topShape = shapes.FirstOrDefault(s => s.X == shape.X2 && s.Y2 == shape.Y);
+            var topShape = shapes.FirstOrDefault(s => s.X == shape.X2 && s.Y2 == y);
 
             if(topShape != null)
             {
-                DrawToTop(topShape, shapes, dxf);
+                DrawToTop(shape.X2, shape.Y, topShape, shapes, dxf);
                 return;
             }
 
             //Tentando ir para direita
-            var rightShape = shapes.FirstOrDefault(s => s.X == shape.X2 && s.Y == shape.Y);
+            var rightShape = shapes.FirstOrDefault(s => s.X == shape.X2 && s.Y == y);
             if(rightShape != null)
             {
-                DrawToRight(rightShape, shapes, dxf);
+                DrawToRight(shape.X2, shape.Y, rightShape, shapes, dxf);
                 return;
             }
 
-            DrawToBottom(shape, shapes, dxf);
+            DrawToBottom(shape.X2, shape.Y, shape, shapes, dxf);
         }
 
-        private void DrawToTop(CADShape shape, List<CADShape> shapes, DxfDocument dxf)
+        private void DrawToTop(int x, int y, CADShape shape, List<CADShape> shapes, DxfDocument dxf)
         {
-            var line = new Line(new Vector2(shape.X, shape.Y2), new Vector2(shape.X, shape.Y)); //Desenhando lado esquerdo para cima
+            var line = new Line(new Vector2(x, y), new Vector2(shape.X, shape.Y)); //Desenhando lado esquerdo para cima
             line.Layer = _layerParede;
             dxf.AddEntity(line);
 
@@ -91,37 +91,37 @@ namespace AutoCivil.CAD.Libraries
                 return;
 
             //Tentando ir para esquerda
-            var leftShape = shapes.FirstOrDefault(s => s.X2 == shape.X && s.Y2 == shape.Y);
+            var leftShape = shapes.FirstOrDefault(s => s.X2 == x && s.Y2 == y);
 
             if (leftShape != null)
             {
-                DrawToLeft(leftShape, shapes, dxf);
+                DrawToLeft(shape.X, shape.Y, leftShape, shapes, dxf);
                 return;
             }
 
             //Tentando ir para direita
-            var topShape = shapes.FirstOrDefault(s => s.X == shape.X && s.Y2 == shape.Y);
+            var topShape = shapes.FirstOrDefault(s => s.X == x && s.Y2 == y);
             if (topShape != null)
             {
-                DrawToTop(topShape, shapes, dxf);
+                DrawToTop(shape.X, shape.Y, topShape, shapes, dxf);
                 return;
             }
 
-            DrawToRight(shape, shapes, dxf);
+            DrawToRight(shape.X, shape.Y, shape, shapes, dxf);
         }
 
-        private void DrawToBottom(CADShape shape, List<CADShape> shapes, DxfDocument dxf)
+        private void DrawToBottom(int x, int y, CADShape shape, List<CADShape> shapes, DxfDocument dxf)
         {
-            var line = new Line(new Vector2(shape.X2, shape.Y), new Vector2(shape.X2, shape.Y2)); //Desenhando o lado direito para baixo
+            var line = new Line(new Vector2(x, y), new Vector2(shape.X2, shape.Y2)); //Desenhando o lado direito para baixo
             line.Layer = _layerParede;
             dxf.AddEntity(line);
 
             //Tentando ir para direita
-            var rightShape = shapes.FirstOrDefault(s => s.X == shape.X2 && s.Y == shape.Y2);
+            var rightShape = shapes.FirstOrDefault(s => s.X <= shape.X2 && s.X2 > shape.X2 && s.Y == shape.Y2);
 
             if (rightShape != null)
             {
-                DrawToRight(rightShape, shapes, dxf);
+                DrawToRight(shape.X2, shape.Y2, rightShape, shapes, dxf);
                 return;
             }
 
@@ -129,124 +129,37 @@ namespace AutoCivil.CAD.Libraries
             var bottomShape = shapes.FirstOrDefault(s => s.X2 == shape.X2 && s.Y == shape.Y2);
             if (bottomShape != null)
             {
-                DrawToBottom(bottomShape, shapes, dxf);
+                DrawToBottom(shape.X2, shape.Y2, bottomShape, shapes, dxf);
                 return;
             }
 
-            DrawToLeft(shape, shapes, dxf);
+            DrawToLeft(shape.X2, shape.Y2, shape, shapes, dxf);
         }
 
-        private void DrawToLeft(CADShape shape, List<CADShape> shapes, DxfDocument dxf)
+        private void DrawToLeft(int x, int y, CADShape shape, List<CADShape> shapes, DxfDocument dxf)
         {
-            var line = new Line(new Vector2(shape.X2, shape.Y2), new Vector2(shape.X, shape.Y2)); //Desenhando o lado de baixo para esquerda
+            var line = new Line(new Vector2(x, y), new Vector2(shape.X, shape.Y2)); //Desenhando o lado de baixo para esquerda
             line.Layer = _layerParede;
             dxf.AddEntity(line);
 
             //Tentando ir para baixo
-            var bottomShape = shapes.FirstOrDefault(s => s.X2 == shape.X && s.Y == shape.Y2);
+            var bottomShape = shapes.FirstOrDefault(s => s.X2 == shape.X && s.Y >= shape.Y2 && s.Y2 < shape.Y2);
 
             if (bottomShape != null)
             {
-                DrawToBottom(bottomShape, shapes, dxf);
+                DrawToBottom(shape.X, shape.Y2, bottomShape, shapes, dxf);
                 return;
             }
 
             //Tentando ir para esquerda
-            var leftShape = shapes.FirstOrDefault(s => s.X2 == shape.X && s.Y == shape.Y);
+            var leftShape = shapes.FirstOrDefault(s => s.X2 == x && s.Y == y);
             if (leftShape != null)
             {
-                DrawToLeft(leftShape, shapes, dxf);
+                DrawToLeft(shape.X, shape.Y2, leftShape, shapes, dxf);
                 return;
             }
 
-            DrawToTop(shape, shapes, dxf);
-        }
-
-        private void DrawShape(CADShape shape, DxfDocument dxf)
-        {
-            if (ShapesDrawn.Contains(shape))
-                return;
-
-            ShapesDrawn.Add(shape);
-
-            DrawRectangleShape(shape, dxf);
-            DrawWallShape(shape, dxf);
-
-            if (shape.RightShape != null)
-            {
-                DrawShape(shape.RightShape, dxf);
-            }
-
-            if (shape.BottomShape != null)
-            {
-                DrawShape(shape.BottomShape, dxf);
-            }
-        }
-
-        private void DrawRectangleShape(CADShape cadShape, DxfDocument dxf)
-        {
-            Line line = null;
-            
-            if(cadShape.TopShape == null || cadShape.TopShape.Place != cadShape.Place)
-            {
-                line = new Line(new Vector2(cadShape.X, cadShape.Y), new Vector2(cadShape.X + cadShape.Width, cadShape.Y));
-                line.Layer = _layerParede;
-                dxf.AddEntity(line);
-            }
-
-            if (cadShape.RightShape == null || cadShape.RightShape.Place != cadShape.Place)
-            {
-                line = new Line(new Vector2(cadShape.X + cadShape.Width, cadShape.Y), new Vector2(cadShape.X + cadShape.Width, cadShape.Y - cadShape.Height));
-                line.Layer = _layerParede;
-                dxf.AddEntity(line);
-            }
-
-            if (cadShape.BottomShape == null || cadShape.BottomShape.Place != cadShape.Place)
-            {
-                line = new Line(new Vector2(cadShape.X + cadShape.Width, cadShape.Y - cadShape.Height), new Vector2(cadShape.X, cadShape.Y - cadShape.Height));
-                line.Layer = _layerParede;
-                dxf.AddEntity(line);
-            }
-
-            if (cadShape.LeftShape == null || cadShape.LeftShape.Place != cadShape.Place)
-            {
-                line = new Line(new Vector2(cadShape.X, cadShape.Y - cadShape.Height), new Vector2(cadShape.X, cadShape.Y));
-                line.Layer = _layerParede;
-                dxf.AddEntity(line);
-            }                           
-        }
-
-        private void DrawWallShape(CADShape cadShape, DxfDocument dxf)
-        {
-            Line line = null;
-
-            if (cadShape.TopShape == null)
-            {
-                line = new Line(new Vector2(cadShape.ExternalX, cadShape.ExternalY), new Vector2(cadShape.ExternalX + cadShape.ExternalWidth, cadShape.ExternalY));
-                line.Layer = _layerParede;
-                dxf.AddEntity(line);
-            }
-
-            if (cadShape.RightShape == null)
-            {
-                line = new Line(new Vector2(cadShape.ExternalX + cadShape.ExternalWidth, cadShape.ExternalY), new Vector2(cadShape.ExternalX + cadShape.ExternalWidth, cadShape.ExternalY - cadShape.ExternalHeight));
-                line.Layer = _layerParede;
-                dxf.AddEntity(line);
-            }
-
-            if (cadShape.BottomShape == null)
-            {
-                line = new Line(new Vector2(cadShape.ExternalX + cadShape.ExternalWidth, cadShape.ExternalY - cadShape.ExternalHeight), new Vector2(cadShape.ExternalX, cadShape.ExternalY - cadShape.ExternalHeight));
-                line.Layer = _layerParede;
-                dxf.AddEntity(line);
-            }
-
-            if (cadShape.LeftShape == null)
-            {
-                line = new Line(new Vector2(cadShape.ExternalX, cadShape.ExternalY - cadShape.ExternalHeight), new Vector2(cadShape.ExternalX, cadShape.ExternalY));
-                line.Layer = _layerParede;
-                dxf.AddEntity(line);
-            }            
+            DrawToTop(shape.X, shape.Y2, shape, shapes, dxf);
         }
     }
 }
